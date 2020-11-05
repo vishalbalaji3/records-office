@@ -34,27 +34,63 @@ dir.create("temp/") # Ignore warning about 'temp' already existing
 
 ## SSN
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 1:3, output = "LAST_FIRST_IGNORE_5555SSN.pdf")
+           pages = 1:3, output = "TEST_LAST_FIRST_1234SSN.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 4:5, output = "TEST_LAST_FIRST_1234SSN001.pdf")
 
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 1:3, output = "LAST_FIRST_1234SSN.pdf")
+           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_2341SSN.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 4:5, output = "LAST_FIRST_1234SSN001.pdf")
-
+           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_2341SSN001.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 1:2, output = "LAST_FIRST_MIDDLE_2341SSN.pdf")
-pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 3:4, output = "LAST_FIRST_MIDDLE_2341SSN001.pdf")
-pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 5:5, output = "LAST_FIRST_MIDDLE_2341SSN002.pdf")
+           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_2341SSN002.pdf")
 
 ## SID
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 1:2, output = "LAST_FIRST_MIDDLE_23410SID.pdf")
+           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_23410SID.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 3:4, output = "LAST_FIRST_MIDDLE_23410SID001.pdf")
+           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_23410SID001.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 5:5, output = "LAST_FIRST_MIDDLE_23410SID002.pdf")
+           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_23410SID002.pdf")
+
+## name only
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE001.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE002.pdf")
+
+## n of n file suffix
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_1of3.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_2of3.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_3of3.pdf")
+
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 1:2, output = "TEST-TYPE-B_LAST_FIRST_MIDDLE.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 3:4, output = "TEST-TYPE-B_LAST_FIRST_MIDDLE_1of2.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 5:5, output = "TEST-TYPE-B_LAST_FIRST_MIDDLE_2of2.pdf")
+
+
+## n 0f n file suffix
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_10f3.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_20f3.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_30f3.pdf")
+
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 1:2, output = "TEST-TYPE-B_LAST_FIRST_MIDDLE.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 3:4, output = "TEST-TYPE-B_LAST_FIRST_MIDDLE_10f2.pdf")
+pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
+           pages = 5:5, output = "TEST-TYPE-B_LAST_FIRST_MIDDLE_20f2.pdf")
 
 # Initialization of the Appender --------------------------------------------------------
 
@@ -128,3 +164,72 @@ filesDeleted_SID <- fileDeleter(toAppend_sid)
 # RUN ONLY AFTER APPENDING #
 
 
+# Append name only copies -------------------------------------------------
+toAppend <- dir(pattern = "(_[[:alpha:]]*\\d{3}.pdf$)", recursive = TRUE, all.files = TRUE, full.names = FALSE)
+ogFiles <- unique(str_extract(toAppend, "(\\D*)"))
+
+filesAppended_nameonly <- fileAppender(ogFiles, toAppend)
+filesDeleted_SID <- fileDeleter(toAppend)
+
+
+# n of n suffix -----------------------------------------------------------
+
+
+fileAppender_nofn <- function(og, append) {
+  tempdir <- paste(getwd(), "/temp/", sep = "") # temp output directory for the combined files
+  
+  # for loop for appending files
+  for (fileName in og) {
+    if(!file.exists(paste0(fileName, ".pdf"))){
+      # file.create(paste0(fileName, ".pdf"))
+      pdf_subset("resources/Office of records-simplecoverpage.pdf",
+                 pages = 1:1, output = paste0(fileName, ".pdf"))
+    }
+    temp <- str_extract(append, paste(fileName, "_\\dof\\d.pdf$", sep = ""))
+    temp <- temp[!is.na(temp)]
+    fileName <- paste(fileName, ".pdf", sep = "")
+    pdftools::pdf_combine(c(fileName, temp), output = paste(tempdir, fileName, sep = ""))
+    appendedFiles <- append(appendedFiles, fileName)
+  }
+  
+  # moves file to working directory
+  filesstrings::move_files(paste(getwd(), "/temp/", appendedFiles, sep = ""), getwd(), overwrite = TRUE)
+  return(appendedFiles)
+}
+
+toAppend <- dir(pattern = "(_\\dof\\d.pdf$)", recursive = TRUE, all.files = TRUE, full.names = FALSE)
+ogFiles <- unlist(strsplit(unique(str_extract(toAppend, "(\\D*)")), ".+\\K_", perl = TRUE))
+
+filesAppended_nofn <- fileAppender_nofn(ogFiles, toAppend)
+filesDeleted_nofn <- fileDeleter(toAppend)
+
+
+# 10f2 appender --------------------------------------------------------------------
+
+fileAppender_n0fn <- function(og, append) {
+  tempdir <- paste(getwd(), "/temp/", sep = "") # temp output directory for the combined files
+  
+  # for loop for appending files
+  for (fileName in og) {
+    if(!file.exists(paste0(fileName, ".pdf"))){
+      # file.create(paste0(fileName, ".pdf"))
+      pdf_subset("resources/Office of records-simplecoverpage.pdf",
+                 pages = 1:1, output = paste0(fileName, ".pdf"))
+    }
+    temp <- str_extract(append, paste(fileName, "_\\d0f\\d.pdf$", sep = ""))
+    temp <- temp[!is.na(temp)]
+    fileName <- paste(fileName, ".pdf", sep = "")
+    pdftools::pdf_combine(c(fileName, temp), output = paste(tempdir, fileName, sep = ""))
+    appendedFiles <- append(appendedFiles, fileName)
+  }
+  
+  # moves file to working directory
+  filesstrings::move_files(paste(getwd(), "/temp/", appendedFiles, sep = ""), getwd(), overwrite = TRUE)
+  return(appendedFiles)
+}
+
+toAppend <- dir(pattern = "(_\\d0f\\d.pdf$)", recursive = TRUE, all.files = TRUE, full.names = FALSE)
+ogFiles <- unlist(strsplit(unique(str_extract(toAppend, "(\\D*)")), ".+\\K_", perl = TRUE))
+
+filesAppended_n0fn <- fileAppender_n0fn(ogFiles, toAppend)
+filesDeleted_n0fn <- fileDeleter(toAppend)
