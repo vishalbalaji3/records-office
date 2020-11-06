@@ -52,11 +52,9 @@ dir.create("temp/")
 
 # Run this section in the given order
 
-appendedFiles <- rep(NA, 0) # initializes an empty list
-deletedFiles <- rep(NA, 0) # initializes an empty list
-
 fileAppender <- function(og, append) {
   tempdir <- paste(getwd(), "/temp/", sep = "") # temp output directory for the combined files
+  appendedFiles <- rep(NA, 0) # initializes an empty list
   
   # for loop for appending files
   for (fileName in og) {
@@ -74,6 +72,7 @@ fileAppender <- function(og, append) {
 
 # Deletes all the copy files.
 fileDeleter <- function(toAppend) {
+  deletedFiles <- rep(NA, 0) # initializes an empty list
   for (fn in toAppend) {
     if (file.exists(fn)) {
       file.remove(fn)
@@ -191,6 +190,7 @@ filesDeleted_name <- fileDeleter(toAppend_name)
 ```{r nofn-appender}
 fileAppender_nofn <- function(og, append) {
   tempdir <- paste(getwd(), "/temp/", sep = "") # temp output directory for the combined files
+  appendedFiles <- rep(NA, 0) # initializes an empty list
   
   # for loop for appending files
   for (fileName in og) {
@@ -224,6 +224,7 @@ filesDeleted_nofn <- fileDeleter(toAppend)
 
 fileAppender_n0fn <- function(og, append) {
   tempdir <- paste(getwd(), "/temp/", sep = "") # temp output directory for the combined files
+  appendedFiles <- rep(NA, 0) # initializes an empty list
   
   # for loop for appending files
   for (fileName in og) {
@@ -250,3 +251,14 @@ ogFiles <- unlist(strsplit(unique(str_extract(toAppend, "(\\D*)")), ".+\\K_", pe
 filesAppended_n0fn <- fileAppender_n0fn(ogFiles, toAppend)
 filesDeleted_n0fn <- fileDeleter(toAppend)
 ```
+
+```{r deleted-files-list}
+deletedFiles <- rep(NA, 0)
+deleteVar <- c(filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesDeleted_nofn, filesDeleted_n0fn)
+deletedFiles <- append(deletedFiles, deleteVar)
+rm(deleteVar,filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesDeleted_nofn, filesDeleted_n0fn, filesAppended_name, filesAppended_SSN, filesAppended_SID, filesAppended_nofn, filesAppended_n0fn, ogFiles, ogFiles_name, ogFiles_ssn, ogFiles_sid, toAppend, toAppend_name, toAppend_ssn, toAppend_sid)
+
+
+list.save(deletedFiles, paste("deletedFiles",format(Sys.time(), "%Y-%m-%d_%H%M"), ".yaml", sep = ""))
+```
+
