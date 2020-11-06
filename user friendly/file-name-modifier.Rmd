@@ -82,32 +82,44 @@ pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
 ```{r extension-corrector}
 files <- list.files(pattern="*.PDF") # Gets the names of the files with .PDF extensions
 newfiles <- gsub(".PDF$", ".pdf", files) # Creates new file names with replaced .pdf extension
-file.rename(files, newfiles) # renames the files
+successPDF <- file.rename(files, newfiles) # renames the files
+
+
+all(successPDF)
 ```
 
 ```{r ssn-name}
 ## Add SSN after SSN number
 files <- list.files(pattern="(*_\\d{9}.pdf)")
 newfiles <- gsub(".pdf$", "SSN.pdf", files)
-file.rename(files, newfiles)
+successSSN <- file.rename(files, newfiles)
 
 ## ADD SSN after SSN number and before copy number
 files <- list.files(pattern="(*_\\d{12}.pdf)")
 newfiles <- files
 stri_sub(newfiles, -7, -8) <- c("SSN")
-file.rename(files, newfiles)
+successSSNcopy <- file.rename(files, newfiles)
+
+
+all(successSSN)
+all(successSSNcopy)
 ```
 
 ```{r sid-name}
 ## Change "SID" from before SID number to after SID number
 files <- list.files(pattern="(*_SID\\d{5}.pdf)")
 newfiles <- sub("(SID)(\\d{5})", "\\2\\1", files)
-file.rename(files, newfiles)
+successSID <- file.rename(files, newfiles)
+
 
 ## Change "SID" from before SID number to 'after SID number and before copy number'
 files <- list.files(pattern="(*_SID\\d{8}.pdf)")
 newfiles <- sub("(SID)(\\d{5})(\\d{3})", "\\2\\1\\3", files)
-file.rename(files, newfiles)
+successSIDcopy <- file.rename(files, newfiles)
+
+
+all(successSID)
+all(successSIDcopy)
 ```
 
 
