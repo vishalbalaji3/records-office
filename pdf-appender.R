@@ -139,7 +139,7 @@ fileDeleter <- function(toAppend) {
 # ogFiles_ssn is a list that contains the names of all the original/root files. It is obtained from the toAppend_ssn list.
 # filesAppended_SSN and filesDeleted_SSN are lists that show what files have been combined and what files have been deleted, respectively.
 
-toAppend_ssn <- dir(pattern = "(\\d{4}SSN\\d{3})", recursive = TRUE, all.files = TRUE, full.names = FALSE)
+toAppend_ssn <- dir(pattern = "(\\d{9}SSN\\d{3})", recursive = TRUE, all.files = TRUE, full.names = FALSE)
 ogFiles_ssn <- unique(str_extract(toAppend_ssn, "(^.*SSN)"))
 
 filesAppended_SSN <- fileAppender(ogFiles_ssn, toAppend_ssn)
@@ -233,3 +233,14 @@ ogFiles <- unlist(strsplit(unique(str_extract(toAppend, "(\\D*)")), ".+\\K_", pe
 
 filesAppended_n0fn <- fileAppender_n0fn(ogFiles, toAppend)
 filesDeleted_n0fn <- fileDeleter(toAppend)
+
+
+# Input GUI ---------------------------------------------------------------
+
+user <- dlg_input("Who are you?", Sys.info()["user"])$res
+if (!length(user)) {# The user clicked the 'cancel' button
+  cat("OK, you prefer to stay anonymous!\n")
+} else {
+  cat("Hello", user, "\n")
+}
+

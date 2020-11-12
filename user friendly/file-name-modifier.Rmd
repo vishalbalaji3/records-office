@@ -12,27 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ## If a package is installed, it will be loaded. If any 
 ## are not, the missing package(s) will be installed 
 ## from CRAN and then loaded.
-
-## Working directory function
-get_user_wd <- function() {
-  message("Paste the data directory path into the console:")
-  dir <- readline()
-  
-  dir <- gsub("\\", "/", dir, fixed=TRUE)
-  return(dir)
-}
-
-directory <- get_user_wd()
-
-knitr::opts_knit$set(root.dir = directory)
-directory
-```
-
-```{r setup-2}
-
 ## First specify the packages of interest
 packages = c("tidyverse", "pdftools",
-             "filesstrings", "stringi")
+             "filesstrings", "stringi", "svDialogs", "rlist")
 
 ## Now load or install&load all
 package.check <- lapply(
@@ -46,6 +28,19 @@ package.check <- lapply(
 )
 
 dir.create("temp/")
+
+## Working directory function
+get_user_wd <- function() {
+  dir <- dlg_input("Paste the data directory path", Sys.info()["user"])$res
+  
+  dir <- gsub("\\", "/", dir, fixed=TRUE)
+  return(dir)
+}
+
+directory <- get_user_wd()
+
+knitr::opts_knit$set(root.dir = directory)
+directory
 ```
 
 ```{r test-file-generator, message=FALSE, include=FALSE, results=FALSE}
@@ -63,9 +58,9 @@ pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
            pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_555444333.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_555444333001.pdf")
+           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_555444333_1of2.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_555444333002.pdf")
+           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_555444333_2of2.pdf")
 
 #SID 
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
@@ -94,15 +89,23 @@ files <- list.files(pattern="(*_\\d{9}.pdf)")
 newfiles <- gsub(".pdf$", "SSN.pdf", files)
 successSSN <- file.rename(files, newfiles)
 
-## ADD SSN after SSN number and before copy number
+## Add SSN after SSN number and before copy number
 files <- list.files(pattern="(*_\\d{12}.pdf)")
 newfiles <- files
 stri_sub(newfiles, -7, -8) <- c("SSN")
 successSSNcopy <- file.rename(files, newfiles)
 
+## Add SSN after SSN and before n of n copy number
+
+files <- list.files(pattern="(*_\\d{9}_\\dof\\d.pdf$)|(*_\\d{9}_\\d0f\\d.pdf$)|(*_\\d{9}_\\dOf\\d.pdf$)")
+newfiles <- files
+stri_sub(newfiles, -9, -10) <- c("SSN")
+successSSNnofn <- file.rename(files, newfiles)
+
 
 all(successSSN)
 all(successSSNcopy)
+all(successSSNnofn)
 ```
 
 ```{r sid-name}

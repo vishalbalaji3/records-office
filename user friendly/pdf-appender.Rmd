@@ -11,27 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ## If a package is installed, it will be loaded. If any 
 ## are not, the missing package(s) will be installed 
 ## from CRAN and then loaded.
-
-## Working directory function
-get_user_wd <- function() {
-  message("Paste the data directory path into the console:")
-  dir <- readline()
-  
-  dir <- gsub("\\", "/", dir, fixed=TRUE)
-  return(dir)
-}
-
-directory <- get_user_wd()
-
-knitr::opts_knit$set(root.dir = directory)
-directory
-```
-
-```{r setup-2}
-
 ## First specify the packages of interest
 packages = c("tidyverse", "pdftools",
-             "filesstrings", "stringi")
+             "filesstrings", "stringi", "svDialogs", "rlist")
 
 ## Now load or install&load all
 package.check <- lapply(
@@ -45,9 +27,22 @@ package.check <- lapply(
 )
 
 dir.create("temp/")
+
+## Working directory function
+get_user_wd <- function() {
+  dir <- dlg_input("Paste the data directory path", Sys.info()["user"])$res
+  
+  dir <- gsub("\\", "/", dir, fixed=TRUE)
+  return(dir)
+}
+
+directory <- get_user_wd()
+
+knitr::opts_knit$set(root.dir = directory)
+directory
 ```
 
-```{r setup-3}
+```{r setup-2}
 # Initialization of the Appender
 
 # Run this section in the given order
