@@ -43,7 +43,7 @@ knitr::opts_knit$set(root.dir = directory)
 directory
 ```
 
-```{r test-file-generator, message=FALSE, include=FALSE, results=FALSE}
+```{r test-file-generator, eval=FALSE, message=FALSE, include=FALSE, results=FALSE}
 # The test files will be generated in the newly set working directory
 
 #SSN
@@ -64,44 +64,60 @@ pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
 
 #SID 
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_SID23410.pdf")
+           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_SID123410.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_SID23410001.pdf")
+           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_SID123410001.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_SID23410002.pdf")
+           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_SID123410002.pdf")
 
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 5:5, output = "TEST_LAST_FIRST_SIDDHART_SID23410.pdf")
+           pages = 5:5, output = "TEST_LAST_FIRST_SIDDHART_SID223410.pdf")
 ```
 
 ```{r extension-corrector}
 files <- list.files(pattern="*.PDF") # Gets the names of the files with .PDF extensions
 newfiles <- gsub(".PDF$", ".pdf", files) # Creates new file names with replaced .pdf extension
-successPDF <- file.rename(files, newfiles) # renames the files
+if (length(newfiles) != 0) {
+  successPDF <- file.rename(files, newfiles) # renames the files
+  all(successPDF)
+} else {
+  message("No files needed a .PDF to .pdf extension change.")
+}
 
-
-all(successPDF)
 ```
 
 ```{r ssn-name}
 ## Add SSN after SSN number
 files <- list.files(pattern="(*_\\d{9}.pdf)")
 newfiles <- gsub(".pdf$", "SSN.pdf", files)
-successSSN <- file.rename(files, newfiles)
+if (length(newfiles) > 0) {
+  successSSN <- file.rename(files, newfiles) # renames the files
+} else {
+  message("No files needed the 'SSN' code after the SSN number")
+}
 
 ## Add SSN after SSN number and before copy number
 files <- list.files(pattern="(*_\\d{12}.pdf)")
 newfiles <- files
 stri_sub(newfiles, -7, -8) <- c("SSN")
-successSSNcopy <- file.rename(files, newfiles)
+
+if (length(newfiles) > 0) {
+  successSSNcopy <- file.rename(files, newfiles) # renames the files
+} else {
+  message("No files needed the 'SSN' code after the SSN number but before copy number")
+}
 
 ## Add SSN after SSN and before n of n copy number
 
 files <- list.files(pattern="(*_\\d{9}_\\dof\\d.pdf$)|(*_\\d{9}_\\d0f\\d.pdf$)|(*_\\d{9}_\\dOf\\d.pdf$)")
 newfiles <- files
 stri_sub(newfiles, -9, -10) <- c("SSN")
-successSSNnofn <- file.rename(files, newfiles)
 
+if (length(newfiles) > 0) {
+  successSSNnofn <- file.rename(files, newfiles) # renames the files
+} else {
+  message("No files needed the 'SSN' code after the SSN number but before n of n copy number")
+}
 
 all(successSSN)
 all(successSSNcopy)
@@ -110,15 +126,23 @@ all(successSSNnofn)
 
 ```{r sid-name}
 ## Change "SID" from before SID number to after SID number
-files <- list.files(pattern="(*_SID\\d{5}.pdf)")
-newfiles <- sub("(SID)(\\d{5})", "\\2\\1", files)
-successSID <- file.rename(files, newfiles)
+files <- list.files(pattern="(*_SID\\d{6}.pdf)")
+newfiles <- sub("(SID)(\\d{6})", "\\2\\1", files)
+if (length(newfiles) > 0) {
+  successSID <- file.rename(files, newfiles) # renames the files
+} else {
+  message("No files needed the 'SID' code order to be changed after SID number")
+}
 
 
 ## Change "SID" from before SID number to 'after SID number and before copy number'
-files <- list.files(pattern="(*_SID\\d{8}.pdf)")
-newfiles <- sub("(SID)(\\d{5})(\\d{3})", "\\2\\1\\3", files)
-successSIDcopy <- file.rename(files, newfiles)
+files <- list.files(pattern="(*_SID\\d{9}.pdf)")
+newfiles <- sub("(SID)(\\d{6})(\\d{3})", "\\2\\1\\3", files)
+if (length(newfiles) > 0) {
+  successSIDcopy <- file.rename(files, newfiles) # renames the files
+} else {
+  message("No files needed the 'SID' code order to be changed after SID number but before copy number")
+}
 
 
 all(successSID)

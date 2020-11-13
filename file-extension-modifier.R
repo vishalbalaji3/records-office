@@ -35,7 +35,7 @@ pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
            pages = 5:5, output = "LAST_FIRST_MIDDLE_SID23410002.pdf")
 
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 5:5, output = "LAST_FIRST_SIDDHART_SID23410.pdf")
+           pages = 5:5, output = "LAST_FIRST_SIDDHART_SID55255.pdf")
 
 # add SSN to file name ----------------------------------------------------
 
@@ -56,11 +56,11 @@ file.rename(files, newfiles)
 # Change SID position to last ---------------------------------------------
 
 ## Change "SID" from before SID number to after SID number
-files <- list.files(pattern="(*_SID\\d{5}.pdf)")
-newfiles <- sub("(SID)(\\d{5})", "\\2\\1", files)
+files <- list.files(pattern="(*_SID\\d{6}.pdf)")
+newfiles <- sub("(SID)(\\d{6})", "\\2\\1", files)
 file.rename(files, newfiles)
 
 ## Change "SID" from before SID number to 'after SID number and before copy number'
-files <- list.files(pattern="(*_SID\\d{8}.pdf)")
-newfiles <- sub("(SID)(\\d{5})(\\d{3})", "\\2\\1\\3", files)
+files <- list.files(pattern="(*_SID\\d{9}.pdf)")
+newfiles <- sub("(SID)(\\d{6})(\\d{3})", "\\2\\1\\3", files)
 file.rename(files, newfiles)

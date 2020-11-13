@@ -52,7 +52,17 @@ fileAppender <- function(og, append) {
   appendedFiles <- rep(NA, 0) # initializes an empty list
   
   # for loop for appending files
+  if (length(og) == 0) {
+    message("No files of this type need to be appended")
+    return(appendedFiles)
+  }
+  
   for (fileName in og) {
+    if(!file.exists(paste0(fileName, ".pdf"))){
+      # file.create(paste0(fileName, ".pdf"))
+      pdf_subset("resources/Office of records-simplecoverpage.pdf",
+                 pages = 1:1, output = paste0(fileName, ".pdf"))
+    }
     temp <- str_extract(append, paste(fileName, "\\d{3}.pdf", sep = ""))
     temp <- temp[!is.na(temp)]
     fileName <- paste(fileName, ".pdf", sep = "")
@@ -83,7 +93,7 @@ fileDeleter <- function(toAppend) {
 ```
 
 
-```{r test-file-generator, message=FALSE, include=FALSE, results=FALSE}
+```{r test-file-generator, eval=FALSE, message=FALSE, include=FALSE, results=FALSE}
 # The test files will be generated in the newly set working directory
 
 ## SSN
@@ -101,11 +111,11 @@ pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
 
 ## SID
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_23410SID.pdf")
+           pages = 1:2, output = "TEST_LAST_FIRST_MIDDLE_123410SID.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_23410SID001.pdf")
+           pages = 3:4, output = "TEST_LAST_FIRST_MIDDLE_123410SID001.pdf")
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
-           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_23410SID002.pdf")
+           pages = 5:5, output = "TEST_LAST_FIRST_MIDDLE_123410SID002.pdf")
 
 ## name only
 pdf_subset('https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf',
@@ -164,7 +174,7 @@ filesDeleted_SSN <- fileDeleter(toAppend_ssn)
 ```{r sid-appender}
 # same variable naming format as Append SSN files section
 
-toAppend_sid <- dir(pattern = "(\\d{5}SID\\d{3})", recursive = TRUE, all.files = TRUE, full.names = FALSE)
+toAppend_sid <- dir(pattern = "(\\d{6}SID\\d{3})", recursive = TRUE, all.files = TRUE, full.names = FALSE)
 ogFiles_sid <- unique(str_extract(toAppend_sid, "(^.*SID)"))
 
 filesAppended_SID <- fileAppender(ogFiles_sid, toAppend_sid)
@@ -186,6 +196,11 @@ filesDeleted_name <- fileDeleter(toAppend_name)
 fileAppender_nofn <- function(og, append) {
   tempdir <- paste(getwd(), "/temp/", sep = "") # temp output directory for the combined files
   appendedFiles <- rep(NA, 0) # initializes an empty list
+  
+  if (length(og) == 0) {
+    message("No files of this type need to be appended")
+    return(appendedFiles)
+  }
   
   # for loop for appending files
   for (fileName in og) {
@@ -221,6 +236,11 @@ fileAppender_n0fn <- function(og, append) {
   tempdir <- paste(getwd(), "/temp/", sep = "") # temp output directory for the combined files
   appendedFiles <- rep(NA, 0) # initializes an empty list
   
+  if (length(og) == 0) {
+    message("No files of this type need to be appended")
+    return(appendedFiles)
+  }
+  
   # for loop for appending files
   for (fileName in og) {
     if(!file.exists(paste0(fileName, ".pdf"))){
@@ -247,14 +267,52 @@ filesAppended_n0fn <- fileAppender_n0fn(ogFiles, toAppend)
 filesDeleted_n0fn <- fileDeleter(toAppend)
 ```
 
+```{r nOfn-appender}
+# This appender is an alternate version of nofn-appender to accomodate for a spelling mistake
+
+fileAppender_nOfn <- function(og, append) {
+  tempdir <- paste(getwd(), "/temp/", sep = "") # temp output directory for the combined files
+  appendedFiles <- rep(NA, 0) # initializes an empty list
+  
+  if (length(og) == 0) {
+    message("No files of this type need to be appended")
+    return(appendedFiles)
+  }
+  
+  # for loop for appending files
+  for (fileName in og) {
+    if(!file.exists(paste0(fileName, ".pdf"))){
+      # file.create(paste0(fileName, ".pdf"))
+      pdf_subset("resources/Office of records-simplecoverpage.pdf",
+                 pages = 1:1, output = paste0(fileName, ".pdf"))
+    }
+    temp <- str_extract(append, paste(fileName, "_\\dOf\\d.pdf$", sep = ""))
+    temp <- temp[!is.na(temp)]
+    fileName <- paste(fileName, ".pdf", sep = "")
+    pdftools::pdf_combine(c(fileName, temp), output = paste(tempdir, fileName, sep = ""))
+    appendedFiles <- append(appendedFiles, fileName)
+  }
+  
+  # moves file to working directory
+  filesstrings::move_files(paste(getwd(), "/temp/", appendedFiles, sep = ""), getwd(), overwrite = TRUE)
+  return(appendedFiles)
+}
+
+toAppend <- dir(pattern = "(_\\dOf\\d.pdf$)", recursive = TRUE, all.files = TRUE, full.names = FALSE)
+ogFiles <- unlist(strsplit(unique(str_extract(toAppend, "(\\D*)")), ".+\\K_", perl = TRUE))
+
+filesAppended_nOfn <- fileAppender_nOfn(ogFiles, toAppend)
+filesDeleted_nOfn <- fileDeleter(toAppend)
+```
+
 ```{r deleted-files-list}
 deletedFiles <- rep(NA, 0)
-deleteVar <- c(filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesDeleted_nofn, filesDeleted_n0fn)
+deleteVar <- c(filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesDeleted_nofn, filesDeleted_n0fn, filesDeleted_nOfn)
 deletedFiles <- append(deletedFiles, deleteVar)
 
-appendedFiles <- c(filesAppended_SSN, filesAppended_SID, filesAppended_name, filesAppended_nofn, filesAppended_n0fn)
+appendedFiles <- c(filesAppended_SSN, filesAppended_SID, filesAppended_name, filesAppended_nofn, filesAppended_n0fn, filesAppended_nOfn)
 
-rm(deleteVar,filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesDeleted_nofn, filesDeleted_n0fn, filesAppended_name, filesAppended_SSN, filesAppended_SID, filesAppended_nofn, filesAppended_n0fn, ogFiles, ogFiles_name, ogFiles_ssn, ogFiles_sid, toAppend, toAppend_name, toAppend_ssn, toAppend_sid)
+rm(deleteVar,filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesDeleted_nofn, filesDeleted_n0fn, filesDeleted_nOfn, filesAppended_name, filesAppended_SSN, filesAppended_SID, filesAppended_nofn, filesAppended_n0fn, filesAppended_nOfn, ogFiles, ogFiles_name, ogFiles_ssn, ogFiles_sid, toAppend, toAppend_name, toAppend_ssn, toAppend_sid)
 
 list.save(appendedFiles, paste("appendedFiles",format(Sys.time(), "%Y-%m-%d_%H%M"), ".yaml", sep = ""))
 list.save(deletedFiles, paste("deletedFiles",format(Sys.time(), "%Y-%m-%d_%H%M"), ".yaml", sep = ""))
