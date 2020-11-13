@@ -2,8 +2,8 @@
 These are all the files and code related to the managment of the Millsaps College Office of Records digital vault file/records.
 
 Important things to note:
-- the folder 'user friendly' contains all the final code that is meant for use. 
-- the resources file is required to be in the same directory as the working directory for proper usage. (This will changed later on to depend on the file located in this repository)
+- the folder 'user friendly' contains all the final code that is meant for use.
+- It is important to have an internet connection when running this script.
 
 ## What files does it currently fix?
 - file-name-modifier
@@ -22,4 +22,4 @@ Important things to note:
 
 ## Upcoming
 
-- Instructions on how to properly use the script
+- Instructions on how to properly use the script (WIP)
