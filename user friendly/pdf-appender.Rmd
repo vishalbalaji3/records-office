@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## from CRAN and then loaded.
 ## First specify the packages of interest
 packages = c("tidyverse", "pdftools",
-             "filesstrings", "stringi", "svDialogs", "rlist")
+             "filesstrings", "stringi", "svDialogs", "rlist", "XML")
 
 ## Now load or install&load all
 package.check <- lapply(
@@ -26,20 +26,31 @@ package.check <- lapply(
   }
 )
 
-dir.create("temp/")
-
 ## Working directory function
 get_user_wd <- function() {
-  dir <- dlg_input("Paste the data directory path", Sys.info()["user"])$res
+  dir <- dlg_input("Paste the data directory path", "H:\\Records Vault")$res
   
   dir <- gsub("\\", "/", dir, fixed=TRUE)
-  return(dir)
+  if (length(dir) > 0 | is.null(dir)) {
+    return(dir)
+  } else {
+    message("The working directory has been set to the default directory: 'H:\\Records Vault'")
+    dir <- "H:/Records Vault"
+    return(dir)
+  }
 }
 
 directory <- get_user_wd()
 
 knitr::opts_knit$set(root.dir = directory)
 directory
+
+dir.create("temp/")
+dir.create("resources/")
+if(!file.exists('resources/Office of records-simplecoverpage.pdf')){
+      download.file("https://github.com/vishalbalaji3/records-office/raw/main/data/resources/Office%20of%20records-simplecoverpage.pdf", 'resources/Office of records-simplecoverpage.pdf', mode="wb")
+    }
+
 ```
 
 ```{r setup-2}
@@ -59,7 +70,6 @@ fileAppender <- function(og, append) {
   
   for (fileName in og) {
     if(!file.exists(paste0(fileName, ".pdf"))){
-      # file.create(paste0(fileName, ".pdf"))
       pdf_subset("resources/Office of records-simplecoverpage.pdf",
                  pages = 1:1, output = paste0(fileName, ".pdf"))
     }
@@ -205,7 +215,6 @@ fileAppender_nofn <- function(og, append) {
   # for loop for appending files
   for (fileName in og) {
     if(!file.exists(paste0(fileName, ".pdf"))){
-      # file.create(paste0(fileName, ".pdf"))
       pdf_subset("resources/Office of records-simplecoverpage.pdf",
                  pages = 1:1, output = paste0(fileName, ".pdf"))
     }
@@ -244,7 +253,6 @@ fileAppender_n0fn <- function(og, append) {
   # for loop for appending files
   for (fileName in og) {
     if(!file.exists(paste0(fileName, ".pdf"))){
-      # file.create(paste0(fileName, ".pdf"))
       pdf_subset("resources/Office of records-simplecoverpage.pdf",
                  pages = 1:1, output = paste0(fileName, ".pdf"))
     }
@@ -282,7 +290,6 @@ fileAppender_nOfn <- function(og, append) {
   # for loop for appending files
   for (fileName in og) {
     if(!file.exists(paste0(fileName, ".pdf"))){
-      # file.create(paste0(fileName, ".pdf"))
       pdf_subset("resources/Office of records-simplecoverpage.pdf",
                  pages = 1:1, output = paste0(fileName, ".pdf"))
     }
@@ -314,7 +321,19 @@ appendedFiles <- c(filesAppended_SSN, filesAppended_SID, filesAppended_name, fil
 
 rm(deleteVar,filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesDeleted_nofn, filesDeleted_n0fn, filesDeleted_nOfn, filesAppended_name, filesAppended_SSN, filesAppended_SID, filesAppended_nofn, filesAppended_n0fn, filesAppended_nOfn, ogFiles, ogFiles_name, ogFiles_ssn, ogFiles_sid, toAppend, toAppend_name, toAppend_ssn, toAppend_sid)
 
-list.save(appendedFiles, paste("appendedFiles",format(Sys.time(), "%Y-%m-%d_%H%M"), ".yaml", sep = ""))
-list.save(deletedFiles, paste("deletedFiles",format(Sys.time(), "%Y-%m-%d_%H%M"), ".yaml", sep = ""))
+dir.create("log/")
+
+if (length(appendedFiles) > 0) {
+  list.save(appendedFiles, paste("log/appendedFiles",format(Sys.time(), "%Y-%m-%d_%H%M"), ".yaml", sep = ""))
+} else {
+  message("\nNo file were appended during this session")
+}
+
+if (length(deletedFiles) > 0) {
+  list.save(deletedFiles, paste("log/deletedFiles",format(Sys.time(), "%Y-%m-%d_%H%M"), ".yaml", sep = ""))
+} else {
+  message("No file were appended during this session")
+}
+
 ```
 

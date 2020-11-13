@@ -27,20 +27,26 @@ package.check <- lapply(
   }
 )
 
-dir.create("temp/")
-
 ## Working directory function
 get_user_wd <- function() {
-  dir <- dlg_input("Paste the data directory path", Sys.info()["user"])$res
+  dir <- dlg_input("Paste the data directory path", "H:\\Records Vault")$res
   
   dir <- gsub("\\", "/", dir, fixed=TRUE)
-  return(dir)
+  if (length(dir) > 0 | is.null(dir)) {
+    return(dir)
+  } else {
+    message("The working directory has been set to the default directory: 'H:\\Records Vault'")
+    dir <- "H:/Records Vault"
+    return(dir)
+  }
 }
 
 directory <- get_user_wd()
 
 knitr::opts_knit$set(root.dir = directory)
 directory
+
+dir.create("temp/")
 ```
 
 ```{r test-file-generator, eval=FALSE, message=FALSE, include=FALSE, results=FALSE}
@@ -83,7 +89,6 @@ if (length(newfiles) != 0) {
 } else {
   message("No files needed a .PDF to .pdf extension change.")
 }
-
 ```
 
 ```{r ssn-name}
@@ -92,6 +97,7 @@ files <- list.files(pattern="(*_\\d{9}.pdf)")
 newfiles <- gsub(".pdf$", "SSN.pdf", files)
 if (length(newfiles) > 0) {
   successSSN <- file.rename(files, newfiles) # renames the files
+  all(successSSN)
 } else {
   message("No files needed the 'SSN' code after the SSN number")
 }
@@ -103,6 +109,7 @@ stri_sub(newfiles, -7, -8) <- c("SSN")
 
 if (length(newfiles) > 0) {
   successSSNcopy <- file.rename(files, newfiles) # renames the files
+  all(successSSNcopy)
 } else {
   message("No files needed the 'SSN' code after the SSN number but before copy number")
 }
@@ -115,13 +122,10 @@ stri_sub(newfiles, -9, -10) <- c("SSN")
 
 if (length(newfiles) > 0) {
   successSSNnofn <- file.rename(files, newfiles) # renames the files
+  all(successSSNnofn)
 } else {
   message("No files needed the 'SSN' code after the SSN number but before n of n copy number")
 }
-
-all(successSSN)
-all(successSSNcopy)
-all(successSSNnofn)
 ```
 
 ```{r sid-name}
@@ -130,6 +134,7 @@ files <- list.files(pattern="(*_SID\\d{6}.pdf)")
 newfiles <- sub("(SID)(\\d{6})", "\\2\\1", files)
 if (length(newfiles) > 0) {
   successSID <- file.rename(files, newfiles) # renames the files
+  all(successSID)
 } else {
   message("No files needed the 'SID' code order to be changed after SID number")
 }
@@ -140,13 +145,10 @@ files <- list.files(pattern="(*_SID\\d{9}.pdf)")
 newfiles <- sub("(SID)(\\d{6})(\\d{3})", "\\2\\1\\3", files)
 if (length(newfiles) > 0) {
   successSIDcopy <- file.rename(files, newfiles) # renames the files
+  all(successSIDcopy)
 } else {
   message("No files needed the 'SID' code order to be changed after SID number but before copy number")
 }
-
-
-all(successSID)
-all(successSIDcopy)
 ```
 
 
