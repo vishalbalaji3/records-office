@@ -103,7 +103,7 @@ fileDeleter <- function(toAppend) {
 ```
 
 
-```{r test-file-generator, eval=FALSE, message=FALSE, include=FALSE, results=FALSE}
+```{r test-file-generator, message=FALSE, results=FALSE}
 # The test files will be generated in the newly set working directory
 
 ## SSN
@@ -179,7 +179,7 @@ deletedFiles <- append(deletedFiles, deleteVar)
 
 appendedFiles <- c(filesAppended_SSN, filesAppended_SID, filesAppended_name)
 
-rm(deleteVar,filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesAppended_name, filesAppended_SSN, filesAppended_SID, ogFiles, ogFiles_name, ogFiles_ssn, ogFiles_sid, toAppend, toAppend_name, toAppend_ssn, toAppend_sid)
+rm(deleteVar,filesDeleted_SSN, filesDeleted_SID, filesDeleted_name, filesAppended_name, filesAppended_SSN, filesAppended_SID, ogFiles_name, ogFiles_ssn, ogFiles_sid, toAppend_name, toAppend_ssn, toAppend_sid)
 
 dir.create("log/")
 
